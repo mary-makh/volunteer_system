@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${volunteer.getFullName()}">Волонтёр</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">Волонтёрская база</a>
+        <div class="navbar-collapse">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/volunteers}">Волонтёры</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/events}">Мероприятия</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="container my-4">
+    <h1 th:text="${volunteer.getFullName()}">ФИО</h1>
+    <p><strong>Email:</strong> <span th:text="${volunteer.email}">email</span></p>
+    <p th:if="${volunteer.phoneNumber != null}"><strong>Телефон:</strong> <span th:text="${volunteer.phoneNumber}"></span></p>
+    <p th:if="${volunteer.birthDate != null}"><strong>Дата рождения:</strong> <span th:text="${#temporals.format(volunteer.birthDate)}"></span></p>
+    <p><strong>Всего часов:</strong> <span th:text="${totalHours}">0</span></p>
+    <p><strong>Участий в мероприятиях:</strong> <span th:text="${participatedCount}">0</span></p>
+    <h2 class="mt-4">Участие в мероприятиях</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Мероприятие</th>
+                    <th>Даты</th>
+                    <th>Статус</th>
+                    <th>Часы</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="p : ${participations}">
+                    <td><a th:href="@{/events/{id}(id=${p.event.eventId})}" th:text="${p.event.title}">Название</a></td>
+                    <td th:text="${#temporals.format(p.event.startingDate) + ' — ' + #temporals.format(p.event.endingDate)}">Даты</td>
+                    <td th:text="${p.status}">Статус</td>
+                    <td th:text="${p.hours != null ? p.hours : '-'}">-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p th:if="${#lists.isEmpty(participations)}" class="text-muted">Нет записей об участии.</p>
+    <a th:href="@{/volunteers}" class="btn btn-outline-secondary mt-3">К списку волонтёров</a>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
